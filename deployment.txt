@@ -1,0 +1,20 @@
+from flask import Flask, request, jsonify
+import joblib
+import pandas as pd
+
+app = Flask(__name__)
+
+@app.route('/predict', methods=['POST'])
+def predict():
+
+    model = joblib.load('best_model.pkl')
+    
+    data = request.json
+    features = pd.DataFrame(data, index=[0])
+    
+    prediction = model.predict(features)[0]
+    
+    return jsonify({'prediction': prediction})
+
+if __name__ == '__main__':
+    app.run(port=5000, debug=True)
